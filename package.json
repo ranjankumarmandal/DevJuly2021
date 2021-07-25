@@ -1,0 +1,23 @@
+{
+  "name": "DevJuly2021",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ranjankumarmandal/DevOct2021.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ranjankumarmandal/DevOct2021/issues"
+  },
+  "homepage": "https://github.com/ranjankumarmandal/DevOct2021#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10"
+  }
+}
