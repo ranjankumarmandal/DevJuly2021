@@ -1,6 +1,6 @@
 // fs module => file system
 let fs = require("fs");
-let cheerio = require("cheerio");
+let cheerio = require("cheerio");    //npm install cheerio
 
 // let f1Data = fs.readFileSync("./f1.txt", "utf-8");
 // console.log(f1Data);
