@@ -1,6 +1,7 @@
 let request = require("request");
 let cheerio = require("cheerio");
 let fs = require("fs");
+const getMatch = require("./match");
 
 function getAllMatches(link) {
     request(link, cb);
@@ -18,12 +19,13 @@ function cb(error, response, html) {
 
 function parseData(html) {
     let ch = cheerio.load(html);
-    let allATags = ch('a[data-hover="Scorecard"]');
+    let allATags = ch('a[data-hover="Scorecard"]');  //[<a> </a>, <a> </a>, <a> </a>, <a> </a>]    => 48 aTags
     //console.log(allATags.length);
     for(let i = 0; i < allATags.length; i++) {
         let link = ch(allATags[i]).attr("href");
         let completeLInk = "https://www.espncricinfo.com" + link;
-        console.log(completeLInk);
+        //console.log(completeLInk);
+        getMatch(completeLInk);
     }
 }
 
