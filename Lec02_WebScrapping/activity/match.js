@@ -27,7 +27,7 @@ function parseData(html) {
     for(let i = 0; i < bothInnings.length; i++) {
         let teamName = ch(bothInnings[i]).find("h5").text();
         teamName = teamName.split("INNINGS")[0].trim();
-        console.log(teamName);
+        //console.log(teamName);
 
         let allTrs = ch(bothInnings[i]).find(".table.batsman tbody tr");  //[<tr> </tr>, <tr> </tr>, <tr> </tr>, <tr> </tr>]
         //console.log(allTrs.length);
@@ -42,13 +42,85 @@ function parseData(html) {
                 let strickRate = ch(allTds[7]).text().trim();
                 //console.log(run);
                 //String interpolation
-                console.log(`Batsman = ${batsmanName} Runs = ${run} Balls = ${ball} Fours = ${fours} Sixes = ${sixes} StrickRate = ${strickRate}`);
-
+                // console.log(`Batsman = ${batsmanName} Runs = ${run} Balls = ${ball} Fours = ${fours} Sixes = ${sixes} StrickRate = ${strickRate}`);
+                processDetails(teamName, batsmanName, run, ball, fours, sixes, strickRate);
             }
         }
     }
 
     console.log("####################################################################");
+}
+
+function processDetails(teamName, batsmanName, run, ball, fours, sixes, strickRate) {
+    //check if folder exists
+    let isTeamFolder = checkTeamFolder(teamName);
+    if(isTeamFolder) {
+        let isBatsman = checkBatsmanFile(teamName, batsmanName);
+        if(isBatsman) {
+            updateBatsmanFile(teamName, batsmanName, run, ball, fours, sixes, strickRate);
+        } else {
+            createBatsmanName(teamName, batsmanName, run, ball, fours, sixes, strickRate);
+        }
+    } else {
+        createTeamFolder(teamName);
+        createBatsmanName(teamName, batsmanName, run, ball, fours, sixes, strickRate);
+    }
+}
+
+function checkTeamFolder(teamName) {
+    //check team folder exists or not
+    return fs.existsSync(teamName);
+}
+
+function createTeamFolder(teamName) {
+    //teamName = India
+    fs.mkdirSync(teamName);
+}
+
+function checkBatsmanFile(teamName, batsmanName) {
+    //teamName = India
+    //batsmanName = MSDhoni
+    //batsmanPath = India/MSDhoni.json   //JavaScript object notation
+    let batsmanPath = `${teamName}/${batsmanName}.json`;
+    return fs.existsSync(batsmanPath);
+}
+
+function createBatsmanName(teamName, batsmanName, run, ball, fours, sixes, strickRate) {
+    let batsmanPath = `${teamName}/${batsmanName}.json`;
+
+    let batsmanFile = [];
+    let innings = {
+        Runs : run,
+        Balls : ball,
+        Four : fours,
+        Six : sixes,
+        SR : strickRate
+    };
+
+    batsmanFile.push(innings);
+    batsmanFile = JSON.stringify(batsmanFile);
+
+    fs.writeFileSync(batsmanPath, batsmanFile);
+}
+
+function updateBatsmanFile(teamName, batsmanName, run, ball, fours, sixes, strickRate) {
+    let batsmanPath = `${teamName}/${batsmanName}.json`;
+    let batsmanFile = fs.readFileSync(batsmanPath);
+    //stringify => original form
+    batsmanFile = JSON.parse(batsmanFile);
+
+    let innings = {
+        Runs : run,
+        Balls : ball,
+        Four : fours,
+        Six : sixes,
+        SR : strickRate
+    };
+
+    batsmanFile.push(innings);
+    batsmanFile = JSON.stringify(batsmanFile);
+
+    fs.writeFileSync(batsmanPath, batsmanFile);
 }
 
 module.exports = getMatch;
