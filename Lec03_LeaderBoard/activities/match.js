@@ -4,17 +4,27 @@ let request = require("request");
 let cheerio = require("cheerio");
 let fs = require("fs");
 
+let count = 0;
+
 let leaderboard = [];
 
 //let link = "https://www.espncricinfo.com/series/icc-cricket-world-cup-2019-1144415/england-vs-new-zealand-final-1144530/full-scorecard";
 
 function getMatch(link) {
-    request(link, cb);
+    console.log("sending request " + count);
+    request(link, cb);                                        // async
+    count++;
 }
 
 function cb(error, response, html) {
     if(error == null && response.statusCode == 200) {
+        count--;
+        console.log("recieved data " + count);
         parseData(html);
+
+        if(count == 0) {
+            console.table(leaderboard);
+        }
     } else if(response.statusCode == 404) {
         console.log("Page not found");
     } else {
@@ -50,10 +60,10 @@ function parseData(html) {
         }
     }
 
-    console.log("####################################################################");
+    // console.log("####################################################################");
 }
 
-function createLeaderBoard(teamName, batsmanName, run, ball, fours, Sixes) {
+function createLeaderBoard(teamName, batsmanName, run, ball, fours, sixes) {
     run = Number(run);
     ball = Number(ball);
     fours = Number(fours);
