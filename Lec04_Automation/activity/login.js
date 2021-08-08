@@ -17,7 +17,7 @@ browserOpenPromise.then(function(browser) {
     // in array
     let page = pages[0];
     tab = page;
-    let pageOpenPromise = page.goto("https://www.hackerrank.com/auth/login");
+    let pageOpenPromise = tab.goto("https://www.hackerrank.com/auth/login");
     return pageOpenPromise;
 })
 .then(function() {
@@ -33,7 +33,36 @@ browserOpenPromise.then(function(browser) {
     return buttonClickPromise;
 })
 .then(function() {
-    console.log("logged in !!!")
+    let waitPromise = tab.waitForSelector("#base-card-1-link", {visible:true});
+    return waitPromise;
+})
+.then(function() {
+    let IpKitClickedPromise = tab.click("#base-card-1-link");
+    return IpKitClickedPromise;
+})
+.then(function() {
+    let waitPromise1 = tab.waitForSelector('a[data-attr1="warmup"]', {visible:true});
+    return waitPromise1;
+})
+.then(function() {
+    let warmupClickPromise = tab.click('a[data-attr1="warmup"]');
+    return warmupClickPromise;
+})
+.then(function() {
+    let waitPromise = tab.waitForSelector(".js-track-click.challenge-list-item", {visible:true});
+    return waitPromise;
+})
+.then(function() {
+    let allQuestionsPromise = tab.$$(".js-track-click.challenge-list-item");
+    return allQuestionsPromise;
+})  // [<a> </a>, <a> </a>, <a> </a>, <a> </a>]
+.then(function(allQuestion) {  
+    for(let i = 0; i < allQuestion.length; i++) {
+        tab.evaluate(function(element) {return element.getAttribute("href");}, allQuestion[i]);
+    }
+})
+.then(function() {
+    console.log("Warm Up clicked !!!")
 })
 .catch(function(error) {
     console.log(error);
