@@ -57,9 +57,17 @@ browserOpenPromise.then(function(browser) {
     return allQuestionsPromise;
 })  // [<a> </a>, <a> </a>, <a> </a>, <a> </a>]
 .then(function(allQuestion) {  
+    let allLinkPromise = [];
     for(let i = 0; i < allQuestion.length; i++) {
-        tab.evaluate(function(element) {return element.getAttribute("href");}, allQuestion[i]);
+        let linkPendingPromise = tab.evaluate(function(element) {return element.getAttribute("href");}, allQuestion[i]);
+        allLinkPromise.push(linkPendingPromise);
     }
+
+    let allQuestionsPromise  = Promise.all(allLinkPromise); 
+    return allQuestionsPromise;
+})
+.then(function(allLinks){
+    console.log(allLinks);
 })
 .then(function() {
     console.log("Warm Up clicked !!!")
